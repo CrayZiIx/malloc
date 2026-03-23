@@ -21,8 +21,9 @@ typedef struct s_block {
 	size_t			size;
 	// whether the block is available
 	int				free;
-	struct s_block *next;
-	struct s_block *prev;
+	struct s_zone	*zone;
+	struct s_block	*next;
+	struct s_block	*prev;
 }	t_block;
 
 // equivalent to mmap region. metadata + blocks.
