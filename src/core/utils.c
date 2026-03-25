@@ -108,3 +108,22 @@ t_block	*find_free_block(t_zone_type type, size_t size) {
 	}
 	return (NULL);
 }
+
+void split_block(t_block *block, size_t size) {
+	t_block *new_block;
+
+	if (block->size <= size + sizeof(t_block))
+		return ;
+	new_block = (t_block *)((char *)(block + 1) + size);
+
+	new_block->size = block->size - size - sizeof(t_block);
+	new_block->free = 1;
+	new_block->zone = block->zone;
+	new_block->prev = block;
+	new_block->next = block->next;
+
+	block->size = size;
+	if (block->next != NULL)
+		block->next->prev = new_block;
+	block->next = new_block;
+}

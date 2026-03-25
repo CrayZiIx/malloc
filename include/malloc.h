@@ -54,6 +54,7 @@ t_zone_type	get_zone_type(size_t size);
 size_t		get_zone_size(t_zone_type type);
 t_block		*find_free_block(t_zone_type type, size_t size);
 t_zone		*create_zone(t_zone_type type);
+void		split_block(t_block *block, size_t size);
 // g_var
 extern t_malloc		g_malloc;
 
