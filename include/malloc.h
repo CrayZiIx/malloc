@@ -41,7 +41,6 @@ typedef struct s_malloc {
 	size_t page_size;
 }	t_malloc;
 
-// proto
 // src/alloc/*
 void 	*malloc(size_t size);
 void 	free(void *ptr);

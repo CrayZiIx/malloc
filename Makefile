@@ -8,6 +8,8 @@ LINK := libft_malloc.so
 CC := cc
 CFLAGS := -Wall -Wextra -Werror -fPIC -Iinclude
 LDFLAGS := -shared
+TEST_CFLAGS := -Wall -Wextra -Werror -Iinclude
+TEST_LDFLAGS := -L. -lft_malloc
 
 SRC := \
 		src/alloc/malloc.c \
@@ -18,6 +20,8 @@ SRC := \
 		src/debug/show_alloc_mem.c
 
 OBJ := $(SRC:.c=.o)
+TEST_SRC := tests/main.c
+TEST_BIN := tests/test_malloc
 
 all: $(NAME)
 
@@ -28,11 +32,19 @@ $(NAME): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(TEST_BIN): $(TEST_SRC) $(LINK)
+	$(CC) $(TEST_CFLAGS) $(TEST_SRC) $(TEST_LDFLAGS) -o $(TEST_BIN)
+
+test_build: $(TEST_BIN)
+
+test: $(TEST_BIN)
+	LD_LIBRARY_PATH=. ./$(TEST_BIN)
+
 clean:
 	rm -f $(OBJ)
 
 fclean: clean
-	rm -f $(NAME) $(LINK)
+	rm -f $(NAME) $(LINK) $(TEST_BIN)
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re test test_build
