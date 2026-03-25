@@ -9,12 +9,16 @@ void free(void *ptr){
 	// recover the block from the user pointer
 	block = ((t_block *)ptr) - 1;
 	zone = block->zone;
-	if (zone->prev != NULL)
-		zone->prev->next = zone->next;
-	else
-		g_malloc.zones = zone->next;
-	if (zone->next != NULL)
-		zone->next->prev = zone->prev;
 
-	munmap(zone, zone->size);
+	if (zone->type == ZONE_LARGE) {
+		if (zone->prev != NULL)
+			zone->prev->next = zone->next;
+		else
+			g_malloc.zones = zone->next;
+		if (zone->next != NULL)
+			zone->next->prev = zone->prev;
+
+		munmap(zone, zone->size);
+	} else
+		block->free = 1;
 }
