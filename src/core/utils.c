@@ -1,6 +1,7 @@
 #include "malloc.h"
 #include <stddef.h>
 #include <unistd.h>
+#include <sys/mman.h>
 
 size_t get_page_size(void) {
 	long	page_size;
@@ -52,4 +53,58 @@ size_t		get_zone_size(t_zone_type type){
 	zone_size = sizeof(t_zone);
 	zone_size += MIN_ZONE_BLOCKS * (sizeof(t_block) + payload_size);
 	return (round_up_to_page(zone_size, get_page_size()));
+}
+
+t_zone	*create_zone(t_zone_type type) {
+	t_zone	*zone;
+	t_block	*block;
+	size_t	zone_size;
+
+	if (type == ZONE_LARGE)
+		return (NULL);
+	zone_size = get_zone_size(type);
+	if (zone_size == 0)
+		return (NULL);
+	zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	if (zone == MAP_FAILED)
+		return (NULL);
+
+	block = (t_block *)(zone + 1);
+
+	zone->size = zone_size;
+	zone->type = type;
+	zone->prev = NULL;
+	zone->next = g_malloc.zones;
+	zone->blocks = block;
+
+	if (g_malloc.zones != NULL)
+		g_malloc.zones->prev = zone;
+	g_malloc.zones = zone;
+
+	block->size = zone_size - sizeof(t_zone) - sizeof(t_block);
+	block->free = 1;
+	block->zone = zone;
+	block->prev = NULL;
+	block->next = NULL;
+
+	return zone;
+}
+
+t_block	*find_free_block(t_zone_type type, size_t size) {
+	t_zone	*zone;
+	t_block	*block;
+
+	zone = g_malloc.zones;
+	while (zone != NULL) {
+		if (zone->type == type){
+			block = zone->blocks;
+			while (block != NULL) {
+				if (block->free == 1 && block->size >= size)
+					return (block);
+				block = block->next;
+			}
+		}
+		zone = zone->next;
+	}
+	return (NULL);
 }
