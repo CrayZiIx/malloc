@@ -6,12 +6,12 @@
 int main(void){
 
 	char	*ptr;
-	ptr = malloc(2048);
-	show_alloc_mem();
+	ptr = malloc(128);
 	if (ptr == NULL) {
 		printf("malloc failed\n");
 		return (1);
 	}
+	show_alloc_mem();
 	strcpy(ptr, "test malloc");
 	printf("after malloc: %s\n", ptr);
 	ptr = realloc(ptr, 4096);
@@ -22,7 +22,7 @@ int main(void){
 	}
 	printf("after realloc: %s\n", ptr);
 	free(ptr);
-	show_alloc_mem();
 	printf("free done\n");
+	show_alloc_mem();
 	return (0);
 }
