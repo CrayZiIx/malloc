@@ -58,6 +58,7 @@ void		split_block(t_block *block, size_t size);
 void		merge_block(t_block *block);
 void		insert_zone(t_zone *zone);
 int			zone_is_empty(t_zone *zone);
+void		*ft_memcpy(void *dst, const void *src, size_t n);
 // g_var
 extern t_malloc		g_malloc;
 

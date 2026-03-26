@@ -28,7 +28,7 @@ void *realloc(void *ptr, size_t size){
 		copy_size = block->size;
 	else
 		copy_size = aligned_size;
-	memcpy(new_ptr, ptr, copy_size);
+	ft_memcpy(new_ptr, ptr, copy_size);
 	free(ptr);
 	return (new_ptr);
 }
