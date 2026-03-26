@@ -17,7 +17,7 @@ typedef enum e_zone_type {
 }	t_zone_type;
 
 typedef struct s_block {
-	// usable payload size for this block
+	// aligned usable payload size for this block | allways a multiple of MALLOC_ALIGNMENT
 	size_t			size;
 	// whether the block is available
 	int				free;
