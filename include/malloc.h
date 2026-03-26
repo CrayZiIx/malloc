@@ -57,6 +57,7 @@ t_zone		*create_zone(t_zone_type type);
 void		split_block(t_block *block, size_t size);
 void		merge_block(t_block *block);
 void		insert_zone(t_zone *zone);
+int			zone_is_empty(t_zone *zone);
 // g_var
 extern t_malloc		g_malloc;
 
