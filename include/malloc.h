@@ -2,6 +2,8 @@
 # define MALLOC_H
 
 # include <stddef.h>
+# include <limits.h>
+# include <stdint.h>
 //define
 # define MALLOC_ALIGNMENT 16
 # define TINY_MAX 64

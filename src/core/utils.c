@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include <stddef.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <sys/mman.h>
 
@@ -21,6 +22,9 @@ size_t get_page_size(void) {
 size_t	align_size(size_t size, size_t alignment) {
 	if (alignment == 0)
 		return (size);
+	// return 0 if the addition would overflow. (0 = invalid computed size)
+	if (size > SIZE_MAX - (alignment - 1))
+		return (0);
 	return (((size + alignment - 1) / alignment) * alignment);
 }
 
@@ -28,6 +32,8 @@ size_t	align_size(size_t size, size_t alignment) {
 size_t	round_up_to_page(size_t size, size_t page_size) {
 	if (page_size == 0)
 		return (size);
+	if (size > SIZE_MAX - (page_size - 1))
+		return (0);
 	return (((size + page_size - 1) / page_size) * page_size);
 }
 
@@ -43,15 +49,26 @@ t_zone_type	get_zone_type(size_t size){
 }
 
 size_t		get_zone_size(t_zone_type type){
-	size_t payload_size;
-	size_t zone_size;
+	size_t	block_span;
+	size_t	payload_size;
+	size_t	zone_size;
 	if (type == ZONE_TINY)
 		payload_size = align_size(TINY_MAX, MALLOC_ALIGNMENT);
 	else if (type == ZONE_SMALL)
 		payload_size = align_size(SMALL_MAX, MALLOC_ALIGNMENT);
-	else return (0);
-	zone_size = sizeof(t_zone);
-	zone_size += MIN_ZONE_BLOCKS * (sizeof(t_block) + payload_size);
+	else
+		return (0);
+	if (payload_size == 0)
+		return (0);
+	if (sizeof(t_block) > SIZE_MAX - payload_size)
+		return (0);
+	block_span = sizeof(t_block) + payload_size;
+	if (MIN_ZONE_BLOCKS > SIZE_MAX / block_span)
+		return (0);
+	zone_size = MIN_ZONE_BLOCKS * block_span;
+	if (sizeof(t_zone) > SIZE_MAX - zone_size)
+		return (0);
+	zone_size += sizeof(t_zone);
 	return (round_up_to_page(zone_size, get_page_size()));
 }
 

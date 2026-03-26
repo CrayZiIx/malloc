@@ -12,6 +12,8 @@ void *malloc(size_t size) {
 	if (size == 0)
 		return (NULL);
 	aligned_size = align_size(size, MALLOC_ALIGNMENT);
+	if (aligned_size == 0)
+		return (NULL);
 	type = get_zone_type(aligned_size);
 	if (type == ZONE_LARGE)
 		return (alloc_large(aligned_size));
@@ -23,8 +25,12 @@ static void	*alloc_large(size_t aligned_size) {
 	t_zone		*zone;
 	t_block		*block;
 
+	if (aligned_size > SIZE_MAX - sizeof(t_zone) - sizeof(t_block))
+		return (NULL);
 	mapping_size = sizeof(t_zone) + sizeof(t_block) + aligned_size;
 	mapping_size = round_up_to_page(mapping_size, get_page_size());
+	if (mapping_size == 0)
+		return (NULL);
 
 	zone = mmap(NULL, mapping_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
