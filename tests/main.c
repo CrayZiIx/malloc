@@ -4,35 +4,19 @@
 #include "malloc.h"
 
 int main(void){
+	void *tiny_max;
+	void *small_min;
+	void *small_max;
+	void *large_min;
 
-	char	*a;
-	char	*b;
-	char	*c;
-	char	*d;
-	a = malloc(128);
-	b = malloc(128);
-	c = malloc(128);
-	// printf("after 3 allocation:\n");
+	tiny_max = malloc(TINY_MAX);
+	small_min = malloc(TINY_MAX + 1);
+	small_max = malloc(SMALL_MAX);
+	large_min = malloc(SMALL_MAX + 1);
 	show_alloc_mem();
-
-	free(b);
-	// printf("after free(b):\n");
-	show_alloc_mem();
-
-	free(a);
-	// printf("after free(a):\n");
-	show_alloc_mem();
-
-	d = malloc(256);
-	// printf("after malloc(256):\n");
-	show_alloc_mem();
-
-	free(c);
-	free(d);
-
-	if (malloc(0) == NULL)
-		write(1, "malloc(0) -> NULL\n", 18);
-
-	// show_alloc_mem();
+	free(tiny_max);
+	free(small_min);
+	free(small_max);
+	free(large_min);
 	return (0);
 }

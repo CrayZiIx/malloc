@@ -39,13 +39,15 @@ static size_t show_zone_type(t_zone_type type, const char *label) {
 	printed_header = 0;
 	while (zone != NULL) {
 		if (zone->type == type) {
-			if (!printed_header) {
-				printf("%s : %p\n", label, (void *)zone);
-				printed_header = 1;
-			}
 			block = zone->blocks;
 			while (block != NULL) {
-				subtotal += print_block(block);
+				if (!block->free) {
+					if (!printed_header) {
+						printf("%s : %p\n", label, (void *)zone);
+						printed_header = 1;
+					}
+					subtotal += print_block(block);
+				}
 				block = block->next;
 			}
 		}
