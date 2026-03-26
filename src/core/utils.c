@@ -157,3 +157,18 @@ void	insert_zone(t_zone *zone) {
 		g_malloc.zones->prev = zone;
 	g_malloc.zones = zone;
 }
+
+int zone_is_empty(t_zone *zone) {
+	t_block *block;
+
+	if (zone == NULL)
+		return (0);
+
+	block = zone->blocks;
+	while (block != NULL) {
+		if (!block->free)
+			return (0);
+		block = block->next;
+	}
+	return (1);
+}
