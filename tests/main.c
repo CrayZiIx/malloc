@@ -1,7 +1,11 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "malloc.h"
+
+static void	putmsg(const char *msg){
+	while (*msg)
+		write(1, msg++, 1);
+}
 
 int main(void){
 	// MIN MAX TEST
@@ -24,10 +28,10 @@ int main(void){
 	void *b;
 	void *c;
 	void *d;
+
 	a = malloc(128);
 	b = malloc(128);
 	c = malloc(128);
-	printf("a=%p b=%p c=%p\n", a, b, c);
 	show_alloc_mem();
 
 	free(a);
@@ -35,11 +39,19 @@ int main(void){
 	show_alloc_mem();
 
 	d = malloc(256);
-	printf("d=%p\n", d);
 	show_alloc_mem();
+	if (d == a)
+		putmsg("reuse ok\n");
+	else
+		putmsg("reuse failed\n");
 
 	free(c);
 	free(d);
 	show_alloc_mem();
+
+	if (malloc(0) == NULL)
+		putmsg("malloc(0) -> NULL)\n");
+	else
+		putmsg("malloc(0) -> failed policy\n");
 	return (0);
 }
