@@ -19,6 +19,8 @@ void free(void *ptr){
 			zone->next->prev = zone->prev;
 
 		munmap(zone, zone->size);
-	} else
+	} else{
 		block->free = 1;
+		merge_block(block);
+	}
 }

@@ -127,3 +127,25 @@ void split_block(t_block *block, size_t size) {
 		block->next->prev = new_block;
 	block->next = new_block;
 }
+
+void merge_block(t_block *block) {
+	t_block *prev;
+	t_block *next;
+
+	if (block == NULL)
+		return ;
+	if (block->next != NULL && block->next->free) {
+		next = block->next;
+		block->size += sizeof(t_block) + next->size;
+		block->next = next->next;
+		if (block->next != NULL)
+			block->next->prev = block;
+	}
+	if (block->prev != NULL && block->prev->free) {
+		prev = block->prev;
+		prev->size += sizeof(t_block) + block->size;
+		prev->next = block->next;
+		if (block->next != NULL)
+			block->next->prev = prev;
+	}
+}
