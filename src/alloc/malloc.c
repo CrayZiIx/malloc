@@ -35,8 +35,6 @@ static void	*alloc_large(size_t aligned_size) {
 
 	zone->size = mapping_size;
 	zone->type = ZONE_LARGE;
-	zone->prev = NULL;
-	zone->next = g_malloc.zones;
 	zone->blocks = block;
 
 	block->size = aligned_size;
