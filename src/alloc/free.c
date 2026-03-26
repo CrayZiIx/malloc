@@ -20,6 +20,7 @@ void free(void *ptr){
 
 		munmap(zone, zone->size);
 	} else{
+		// pooled zones are kept mapped for reuse, even when fully free (may change)
 		block->free = 1;
 		merge_block(block);
 	}
