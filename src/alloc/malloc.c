@@ -38,9 +38,7 @@ void *malloc(size_t size) {
 		block->next = NULL;
 		block->prev = NULL;
 
-		if (g_malloc.zones != NULL)
-			g_malloc.zones->prev = zone;
-		g_malloc.zones = zone;
+		insert_zone(zone);
 
 		return ((void *)(block + 1));
 	} else {
