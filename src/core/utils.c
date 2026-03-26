@@ -73,8 +73,6 @@ t_zone	*create_zone(t_zone_type type) {
 
 	zone->size = zone_size;
 	zone->type = type;
-	zone->prev = NULL;
-	zone->next = g_malloc.zones;
 	zone->blocks = block;
 
 	insert_zone(zone);
@@ -149,13 +147,31 @@ void merge_block(t_block *block) {
 }
 
 void	insert_zone(t_zone *zone) {
+	t_zone	*current;
+
 	if (zone == NULL)
 		return ;
-	zone->prev = NULL;
-	zone->next = g_malloc.zones;
-	if (g_malloc.zones != NULL)
+	if (g_malloc.zones == NULL) {
+		zone->prev = NULL;
+		zone->next = NULL;
+		g_malloc.zones = zone;
+		return ;
+	}
+	if (zone < g_malloc.zones) {
+		zone->prev = NULL;
+		zone->next = g_malloc.zones;
 		g_malloc.zones->prev = zone;
-	g_malloc.zones = zone;
+		g_malloc.zones = zone;
+		return ;
+	}
+	current = g_malloc.zones;
+	while (current->next != NULL && current->next < zone)
+		current = current->next;
+	zone->next = current->next;
+	zone->prev = current;
+	if (current->next != NULL)
+		current->next->prev = zone;
+	current->next = zone;
 }
 
 int zone_is_empty(t_zone *zone) {
