@@ -32,7 +32,7 @@ $(NAME): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TEST_BIN): $(TEST_SRC) $(LINK)
+$(TEST_BIN): $(TEST_SRC) $(NAME)
 	$(CC) $(TEST_CFLAGS) $(TEST_SRC) $(TEST_LDFLAGS) -o $(TEST_BIN)
 
 test_build: $(TEST_BIN)
