@@ -50,7 +50,7 @@ int main(void){
 	show_alloc_mem();
 
 	if (malloc(0) == NULL)
-		putmsg("malloc(0) -> NULL)\n");
+		putmsg("malloc(0) -> NULL\n");
 	else
 		putmsg("malloc(0) -> failed policy\n");
 	return (0);
