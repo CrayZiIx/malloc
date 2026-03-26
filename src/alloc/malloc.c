@@ -1,14 +1,13 @@
 #include "malloc.h"
+#include <stddef.h>
 #include <sys/mman.h>
 
 static void	*alloc_large(size_t aligned_size);
+static void *alloc_pooled(t_zone_type type, size_t aligned_size);
 
 void *malloc(size_t size) {
 	size_t		aligned_size;
 	t_zone_type type;
-	t_zone		*zone;
-	t_block		*block;
-
 
 	if (size == 0)
 		return (NULL);
@@ -16,16 +15,7 @@ void *malloc(size_t size) {
 	type = get_zone_type(aligned_size);
 	if (type == ZONE_LARGE)
 		return (alloc_large(aligned_size));
-	block = find_free_block(type, aligned_size);
-	if (block == NULL) {
-		zone = create_zone(type);
-		if (zone == NULL)
-			return (NULL);
-		block = zone->blocks;
-	}
-	split_block(block, aligned_size);
-	block->free = 0;
-	return ((void *)(block + 1));
+	return (alloc_pooled(type, aligned_size));
 }
 
 static void	*alloc_large(size_t aligned_size) {
@@ -58,4 +48,21 @@ static void	*alloc_large(size_t aligned_size) {
 	insert_zone(zone);
 
 	return ((void *)(block + 1));
+}
+
+static void *alloc_pooled(t_zone_type type, size_t aligned_size){
+	t_zone		*zone;
+	t_block		*block;
+
+	block = find_free_block(type, aligned_size);
+	if (block == NULL) {
+		zone = create_zone(type);
+		if (zone == NULL)
+			return (NULL);
+		block = zone->blocks;
+	}
+	split_block(block, aligned_size);
+	block->free = 0;
+	return ((void *)(block + 1));
+
 }
