@@ -9,6 +9,10 @@ void *malloc(size_t size) {
 	t_zone		*zone;
 	t_block		*block;
 
+
+	if (size == 0)
+		return (NULL);
+
 	aligned_size = align_size(size, MALLOC_ALIGNMENT);
 	type = get_zone_type(aligned_size);
 	if (type == ZONE_LARGE) {

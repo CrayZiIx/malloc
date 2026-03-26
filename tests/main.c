@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "malloc.h"
 
 int main(void){
@@ -29,17 +29,10 @@ int main(void){
 
 	free(c);
 	free(d);
-	// strcpy(ptr, "test malloc");
-	// printf("after malloc: %s\n", ptr);
-	// ptr = realloc(ptr, 4096);
-	// show_alloc_mem();
-	// if (ptr == NULL) {
-	// 	printf("realloc failed: %s\n", ptr);
-	// 	return (1);
-	// }
-	// printf("after realloc: %s\n", ptr);
-	// free(ptr);
-	// printf("free done\n");
+
+	if (malloc(0) == NULL)
+		write(1, "malloc(0) -> NULL\n", 18);
+
 	// show_alloc_mem();
 	return (0);
 }
