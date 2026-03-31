@@ -26,6 +26,7 @@ typedef struct s_block {
 	struct s_zone	*zone;
 	struct s_block	*next;
 	struct s_block	*prev;
+	char            padding[8];
 }	t_block;
 
 // equivalent to mmap region. metadata + blocks.
